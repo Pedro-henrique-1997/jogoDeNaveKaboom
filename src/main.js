@@ -6,17 +6,31 @@ kaboom({
 
 loadSprite("nave1", "/sprites/Spaceship1.png")
 
+let alienigenas = [
+	"UFO1",
+	"UFO2",
+	"Alien1",
+	"Alien2",
+	"Alien3",
+	"Alien4",
+]
+
+for(var alien of alienigenas){
+	loadSprite(alien, `/sprites/${alien}.png`)
+}
+
 scene("jogoDeNave", () => {
 
     var naveVelocidade = 300
 	var tiroSpeed = 400
+	var inimigoVelocidade = 500
 
 	var nave = add([
 		sprite("nave1"),
 		area(),
 		pos(700, 500),
 		anchor("center"),
-		scale(4),
+		scale(3),
 		"nave1",
 	])
 
@@ -53,6 +67,23 @@ scene("jogoDeNave", () => {
 	onKeyPress("a", () => {
 		atirar(nave.pos.add(16,0))
 		atirar(nave.pos.sub(16,0))
+	})
+
+	function gerarAliens(){
+		var et = choose(alienigenas)
+		 add([
+			sprite(et),
+		    pos(rand(0, width()), 0),
+		    anchor("center"),
+		    area(),
+		    move(DOWN, inimigoVelocidade),
+		    offscreen({destroy: true}),
+		    "ET",
+		 ])
+	}
+
+	loop(1, () => {
+		gerarAliens()
 	})
 })
 
