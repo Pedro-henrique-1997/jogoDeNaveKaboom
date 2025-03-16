@@ -22,7 +22,8 @@ for(var alien of alienigenas){
 scene("jogoDeNave", () => {
 
     var naveVelocidade = 300
-	var tiroSpeed = 400
+	var tiroSpeed = 700
+	var energiaNave = 1000
 	var inimigoVelocidade = 500
 
 	var nave = add([
@@ -31,6 +32,7 @@ scene("jogoDeNave", () => {
 		pos(700, 500),
 		anchor("center"),
 		scale(3),
+		health(energiaNave),
 		"nave1",
 	])
 
@@ -65,8 +67,7 @@ scene("jogoDeNave", () => {
 	}
 
 	onKeyPress("a", () => {
-		atirar(nave.pos.add(16,0))
-		atirar(nave.pos.sub(16,0))
+		atirar(nave.pos.add(12,0))
 	})
 
 	function gerarAliens(){
@@ -76,6 +77,7 @@ scene("jogoDeNave", () => {
 		    pos(rand(0, width()), 0),
 		    anchor("center"),
 		    area(),
+			health(100),
 		    move(DOWN, inimigoVelocidade),
 		    offscreen({destroy: true}),
 		    "ET",
@@ -85,6 +87,20 @@ scene("jogoDeNave", () => {
 	loop(1, () => {
 		gerarAliens()
 	})
+
+	const barraDeEnergia = add([
+		rect(width(), 24),
+		pos(0,0),
+		color(0,0,0),
+		fixed(),
+		{
+			max:energiaNave,
+			set(hp){
+				this.width = width() * hp / this.max
+				this.flash = true
+			}
+		}
+	])
 })
 
 go("jogoDeNave")
