@@ -21,10 +21,11 @@ for(var alien of alienigenas){
 
 scene("jogoDeNave", () => {
 
-    var naveVelocidade = 300
+    var naveVelocidade = 500
 	var tiroSpeed = 700
 	var energiaNave = 1000
 	var inimigoVelocidade = 500
+	var inimigoEnergia = 100
 
 	var nave = add([
 		sprite("nave1"),
@@ -77,10 +78,10 @@ scene("jogoDeNave", () => {
 		    pos(rand(0, width()), 0),
 		    anchor("center"),
 		    area(),
-			health(100),
+			health(inimigoEnergia),
 		    move(DOWN, inimigoVelocidade),
 		    offscreen({destroy: true}),
-		    "ET",
+		    "alien",
 		 ])
 	}
 
@@ -91,7 +92,7 @@ scene("jogoDeNave", () => {
 	const barraDeEnergia = add([
 		rect(width(), 24),
 		pos(0,0),
-		color(0,0,0),
+		color(255, 255, 0),
 		fixed(),
 		{
 			max:energiaNave,
@@ -100,6 +101,37 @@ scene("jogoDeNave", () => {
 				this.flash = true
 			}
 		}
+	])
+
+	onCollide("laser", "alien", (t, a) => {
+		destroy(t)
+		a.hurt(40)
+	})
+
+	on("death","alien", (et) => {
+		destroy(et)
+		addKaboom(et.pos)
+	})
+
+	nave.onCollide("alien", () => {
+		nave.hurt(100)
+		shake()
+		energiaNave -= 100
+		if(energiaNave == 0){
+			go("fim")
+		}
+	})
+
+	nave.onHurt(() => {
+		barraDeEnergia.set(nave.hp())
+	})
+
+})
+
+scene("fim", () => {
+	add([
+		text("Voce Perdeu"),
+		pos(24, 25)
 	])
 })
 
