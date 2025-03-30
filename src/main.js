@@ -5,6 +5,7 @@ kaboom({
 })
 
 loadSprite("nave1", "/sprites/Spaceship1.png")
+loadSprite("heart", "/sprites/coracao.png")
 
 let alienigenas = [
 	"UFO1",
@@ -26,6 +27,7 @@ scene("jogoDeNave", () => {
 	var energiaNave = 1000
 	var inimigoVelocidade = 500
 	var inimigoEnergia = 100
+	var coracaoVelocidade = 600
 
 	var nave = add([
 		sprite("nave1"),
@@ -78,6 +80,7 @@ scene("jogoDeNave", () => {
 		    pos(rand(0, width()), 0),
 		    anchor("center"),
 		    area(),
+			scale(1),
 			health(inimigoEnergia),
 		    move(DOWN, inimigoVelocidade),
 		    offscreen({destroy: true}),
@@ -105,7 +108,7 @@ scene("jogoDeNave", () => {
 
 	onCollide("laser", "alien", (t, a) => {
 		destroy(t)
-		a.hurt(40)
+		a.hurt(20)
 	})
 
 	on("death","alien", (et) => {
@@ -125,6 +128,32 @@ scene("jogoDeNave", () => {
 	nave.onHurt(() => {
 		barraDeEnergia.set(nave.hp())
 	})
+
+	function gerarCoracoes(){
+		const coracao = add([
+			sprite("heart"),
+			area(),
+			pos(rand(0, width()), 0),
+			move(DOWN, coracaoVelocidade),
+			anchor("center"),
+			"coracao",
+		])
+	}
+
+	loop(4, () => {
+		gerarCoracoes()
+	})
+
+	nave.onCollide("coracao", (c) => {
+		destroy(c)
+		nave.heal(60)
+		energiaNave += 60
+	})
+
+	nave.onHeal(() => {
+		barraDeEnergia.set(nave.hp())
+	})
+
 
 })
 
