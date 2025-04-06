@@ -6,6 +6,7 @@ kaboom({
 
 loadSprite("nave1", "/sprites/Spaceship1.png")
 loadSprite("heart", "/sprites/coracao.png")
+loadSprite("raio", "/sprites/lightening.png")
 
 let alienigenas = [
 	"UFO1",
@@ -28,6 +29,7 @@ scene("jogoDeNave", () => {
 	var inimigoVelocidade = 500
 	var inimigoEnergia = 100
 	var coracaoVelocidade = 600
+	var beamSpeed = 400
 
 	var nave = add([
 		sprite("nave1"),
@@ -108,7 +110,7 @@ scene("jogoDeNave", () => {
 
 	onCollide("laser", "alien", (t, a) => {
 		destroy(t)
-		a.hurt(20)
+		a.hurt(35)
 	})
 
 	on("death","alien", (et) => {
@@ -154,7 +156,27 @@ scene("jogoDeNave", () => {
 		barraDeEnergia.set(nave.hp())
 	})
 
+	function raioLaser(posicao){
+		const raio = add([
+			sprite("raio"),
+		    area(),
+		    pos(posicao),
+		    move(UP, beamSpeed),
+            anchor("center"),
+			offscreen({destroy: true}),
+		    "raio",
+		])
+	}
 
+	onKeyPress("s", () => {
+		raioLaser(nave.pos.add(14,0))
+	})
+
+	onCollide("alien","raio", (et, raio) => {
+		destroy(raio)
+		et.hurt(80)
+		shake()
+	})
 })
 
 scene("fim", () => {
