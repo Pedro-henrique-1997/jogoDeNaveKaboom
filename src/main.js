@@ -5,6 +5,7 @@ kaboom({
 })
 
 loadSprite("nave1", "/sprites/Spaceship1.png")
+loadSprite("nave2", "/sprites/Spaceship2.png")
 loadSprite("heart", "/sprites/coracao.png")
 loadSprite("raio", "/sprites/lightening.png")
 
@@ -23,13 +24,18 @@ for(var alien of alienigenas){
 
 scene("jogoDeNave", () => {
 
+	//Variaveis contaveis de energia e velocidade
+
     var naveVelocidade = 500
 	var tiroSpeed = 700
 	var energiaNave = 1000
 	var inimigoVelocidade = 500
 	var inimigoEnergia = 100
 	var coracaoVelocidade = 600
+	var iconeTransformSpeed = 600
 	var beamSpeed = 400
+
+	//Criação da nave modelo 1 e seus componentes e ações
 
 	var nave = add([
 		sprite("nave1"),
@@ -71,9 +77,50 @@ scene("jogoDeNave", () => {
 		])
 	}
 
+	//Evento do mecanismo de mudança de forma
+
+	function gerarIconeTransform2() {
+		const base = add([
+			rect(48, 48),               // tamanho maior
+			pos(rand(48, width() - 48), 0), // evita sair da tela
+			anchor("center"),
+			move(DOWN, iconeTransformSpeed),
+			color(255, 215, 0),         // amarelo dourado
+			outline(4, rgb(0, 0, 0)),   // contorno preto
+			area(),
+			"fusao2",
+		])
+	
+		base.add([
+			text("2", { size: 28 }),    // tamanho da fonte proporcional
+			anchor("center"),
+			pos(0, 0),
+			color(0, 0, 0),             // texto preto
+		])
+	}
+	
+	
+	loop(4, () => {
+		gerarIconeTransform2()
+	})
+	
+
+	//Mudança de sprite para o outro
+
+	onCollide("fusao2", "nave1", (f, n) => {
+		destroy(f)
+		n.use(sprite("nave2"))
+		n.unuse("nave1")
+		n.use("nave2")
+	})
+	
+
 	onKeyPress("a", () => {
 		atirar(nave.pos.add(12,0))
 	})
+	
+
+	//Gerador de aliens (inimigos)
 
 	function gerarAliens(){
 		var et = choose(alienigenas)
@@ -94,6 +141,8 @@ scene("jogoDeNave", () => {
 		gerarAliens()
 	})
 
+//Criação da barra de energia
+
 	const barraDeEnergia = add([
 		rect(width(), 24),
 		pos(0,0),
@@ -107,6 +156,8 @@ scene("jogoDeNave", () => {
 			}
 		}
 	])
+
+	//Colisões em geral e eventos
 
 	onCollide("laser", "alien", (t, a) => {
 		destroy(t)
@@ -130,6 +181,8 @@ scene("jogoDeNave", () => {
 	nave.onHurt(() => {
 		barraDeEnergia.set(nave.hp())
 	})
+
+	//Gerar corações para cura e sua execução de cura
 
 	function gerarCoracoes(){
 		const coracao = add([
@@ -156,6 +209,8 @@ scene("jogoDeNave", () => {
 		barraDeEnergia.set(nave.hp())
 	})
 
+	//Especial da nave modelo 1
+
 	function raioLaser(posicao){
 		const raio = add([
 			sprite("raio"),
@@ -169,7 +224,11 @@ scene("jogoDeNave", () => {
 	}
 
 	onKeyPress("s", () => {
-		raioLaser(nave.pos.add(14,0))
+		if(nave.is("nave1")){
+			raioLaser(nave.pos.add(14,0))
+		}else if(nave.is("nave2")){
+			burp()
+		}
 	})
 
 	onCollide("alien","raio", (et, raio) => {
@@ -177,7 +236,10 @@ scene("jogoDeNave", () => {
 		et.hurt(80)
 		shake()
 	})
+
 })
+
+//Cena de Game Over
 
 scene("fim", () => {
 	add([
@@ -185,5 +247,7 @@ scene("fim", () => {
 		pos(24, 25)
 	])
 })
+
+// Chamar a cena do jogo
 
 go("jogoDeNave")
