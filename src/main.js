@@ -79,8 +79,30 @@ scene("jogoDeNave", () => {
 
 	//Evento do mecanismo de mudança de forma
 
+	function gerarIconeTransform1(){
+		const base1 = add([
+			rect(48, 48),
+			pos(rand(48, width() - 48), 0),
+			anchor("center"),
+			move(DOWN, iconeTransformSpeed),
+			color(0, 179, 0),
+			outline(4, rgb(0, 0, 0)),
+			area(),
+			"fusao1",
+		])
+
+		base1.add([
+			text("1", {size: 28}),
+			anchor("center"),
+			pos(0,0),
+			color(0,0,0),
+		])
+	}
+
+
+//Transformação: modelo 2
 	function gerarIconeTransform2() {
-		const base = add([
+		const base2 = add([
 			rect(48, 48),               // tamanho maior
 			pos(rand(48, width() - 48), 0), // evita sair da tela
 			anchor("center"),
@@ -91,7 +113,7 @@ scene("jogoDeNave", () => {
 			"fusao2",
 		])
 	
-		base.add([
+		base2.add([
 			text("2", { size: 28 }),    // tamanho da fonte proporcional
 			anchor("center"),
 			pos(0, 0),
@@ -103,7 +125,6 @@ scene("jogoDeNave", () => {
 	loop(4, () => {
 		gerarIconeTransform2()
 	})
-	
 
 	//Mudança de sprite para o outro
 
@@ -113,7 +134,17 @@ scene("jogoDeNave", () => {
 		n.unuse("nave1")
 		n.use("nave2")
 	})
-	
+
+	loop(4, () => {
+		gerarIconeTransform1()
+	})
+
+	onCollide("fusao1", "nave2", (f1, n2) => {
+		destroy(f1)
+		n2.use(sprite("nave1"))
+		n2.unuse("nave2")
+		n2.use("nave1")
+	})
 
 	onKeyPress("a", () => {
 		atirar(nave.pos.add(12,0))
