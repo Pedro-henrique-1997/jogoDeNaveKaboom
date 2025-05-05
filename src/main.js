@@ -65,7 +65,7 @@ scene("jogoDeNave", () => {
 
 	function atirar(posicao){
 		add([
-			rect(40, 60),
+			rect(12, 48),
 			pos(posicao),
 			outline(4),
 			color(255, 45, 71),
@@ -147,6 +147,7 @@ scene("jogoDeNave", () => {
 	})
 
 	onKeyPress("a", () => {
+		atirar(nave.pos.sub(16, 0))
 		atirar(nave.pos.add(12,0))
 	})
 	
