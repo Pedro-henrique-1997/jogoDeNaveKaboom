@@ -9,6 +9,22 @@ loadSprite("nave2", "/sprites/Spaceship2.png")
 loadSprite("heart", "/sprites/coracao.png")
 loadSprite("raio", "/sprites/lightening.png")
 
+/***************************Todos os trechos organizados em topicos *********************************/
+//Variaveis contaveis de energia e velocidade
+//Criação da nave modelo 1 e seus componentes e ações
+//Evento do mecanismo de mudança de forma
+//Transformação: modelo 2
+//Mudança de sprite para o outro
+//Gerador de aliens (inimigos)
+//Criação da barra de energia
+//Colisões em geral e eventos
+//Gerar corações para cura e sua execução de cura
+//Especial da nave modelo 1
+//Especial da nave modelo 2
+//Cena de Game Over
+// Chamar a cena do jogo
+
+
 let alienigenas = [
 	"UFO1",
 	"UFO2",
@@ -30,7 +46,7 @@ scene("jogoDeNave", () => {
 	var tiroSpeed = 700
 	var energiaNave = 1000
 	var inimigoVelocidade = 500
-	var inimigoEnergia = 100
+	var inimigoEnergia = 300
 	var coracaoVelocidade = 600
 	var iconeTransformSpeed = 600
 	var beamSpeed = 400
@@ -133,7 +149,9 @@ scene("jogoDeNave", () => {
 		n.use(sprite("nave2"))
 		n.unuse("nave1")
 		n.use("nave2")
+		
 	})
+	
 
 	loop(4, () => {
 		gerarIconeTransform1()
@@ -259,7 +277,7 @@ scene("jogoDeNave", () => {
 		if(nave.is("nave1")){
 			raioLaser(nave.pos.add(14,0))
 		}else if(nave.is("nave2")){
-			burp()
+			ondaDeEnergia(nave.pos)
 		}
 	})
 
@@ -269,6 +287,35 @@ scene("jogoDeNave", () => {
 		shake()
 	})
 
+	//Especial da nave modelo 2
+
+	function ondaDeEnergia(posicao){
+		const onda = add([
+			circle(24),
+		    pos(posicao),
+		    opacity(0.5),
+		    color(0, 255, 255),
+		    anchor("center"),
+		    area({scale: 2}),
+		    "onda",
+		{
+			raio: 24,
+		}
+		])
+		
+		onda.onUpdate(() => {
+			onda.raio += 300 * dt()
+			onda.scale = vec2(onda.raio / 24)
+			if(onda.raio >= 300){
+				destroy(onda)
+			}
+		})
+	}
+
+	onCollide("onda", "alien", (onda, alien) => {
+		alien.hurt(100)
+		addKaboom(alien.pos)
+	})
 })
 
 //Cena de Game Over
