@@ -223,7 +223,7 @@ scene("jogoDeNave", () => {
 		nave.hurt(100)
 		shake()
 		energiaNave -= 100
-		if(energiaNave == 0){
+		if(energiaNave <= 0){
 			go("fim")
 		}
 	})
