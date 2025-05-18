@@ -8,12 +8,14 @@ loadSprite("nave1", "/sprites/Spaceship1.png")
 loadSprite("nave2", "/sprites/Spaceship2.png")
 loadSprite("heart", "/sprites/coracao.png")
 loadSprite("raio", "/sprites/lightening.png")
+loadSprite("nave3", "/sprites/Spaceship3.png")
 
 /***************************Todos os trechos organizados em topicos *********************************/
 //Variaveis contaveis de energia e velocidade
 //Criação da nave modelo 1 e seus componentes e ações
 //Evento do mecanismo de mudança de forma
 //Transformação: modelo 2
+//Transformação: modelo 3
 //Mudança de sprite para o outro
 //Gerador de aliens (inimigos)
 //Criação da barra de energia
@@ -93,6 +95,11 @@ scene("jogoDeNave", () => {
 		])
 	}
 
+	onKeyPress("a", () => {
+		atirar(nave.pos.sub(16, 0))
+		atirar(nave.pos.add(12,0))
+	})
+
 	//Evento do mecanismo de mudança de forma
 
 	function gerarIconeTransform1(){
@@ -136,26 +143,41 @@ scene("jogoDeNave", () => {
 			color(0, 0, 0),             // texto preto
 		])
 	}
+
+	//Transformação: modelo 3
+	function gerarIconeTransform3(){
+		const base3 = add([
+			rect(48, 48),
+			pos(rand(48, width() - 48), 0),
+			anchor("center"),
+			move(DOWN, iconeTransformSpeed),
+			outline(4, rgb(0, 0, 0)),   // contorno preto
+			area(),
+			color(255, 0, 0),
+			"fusao3",
+		])
+
+		base3.add([
+			text("3", {size: 28}),
+			color(0,0,0),
+			anchor("center"),
+			pos(0,0),
+		])
+	}
 	
+    loop(4, () => {
+		gerarIconeTransform3()
+	})
+
+	loop(3, () => {
+		gerarIconeTransform1()
+	})
 	
-	loop(4, () => {
+	loop(2, () => {
 		gerarIconeTransform2()
 	})
 
 	//Mudança de sprite para o outro
-
-	onCollide("fusao2", "nave1", (f, n) => {
-		destroy(f)
-		n.use(sprite("nave2"))
-		n.unuse("nave1")
-		n.use("nave2")
-		
-	})
-	
-
-	loop(4, () => {
-		gerarIconeTransform1()
-	})
 
 	onCollide("fusao1", "nave2", (f1, n2) => {
 		destroy(f1)
@@ -164,12 +186,41 @@ scene("jogoDeNave", () => {
 		n2.use("nave1")
 	})
 
-	onKeyPress("a", () => {
-		atirar(nave.pos.sub(16, 0))
-		atirar(nave.pos.add(12,0))
+	onCollide("fusao2", "nave1", (f, n) => {
+		destroy(f)
+		n.use(sprite("nave2"))
+		n.unuse("nave1")
+		n.use("nave2")		
+	})
+
+	onCollide("fusao3", "nave1", (f, n) => {
+		destroy(f)	
+        n.use(sprite("nave3"))
+		n.unuse("nave1")
+		n.use("nave3")
+	})
+
+	onCollide("fusao3", "nave2", (f, n) => {
+		destroy(f)	
+		n.use(sprite("nave3"))
+		n.unuse("nave2")
+		n.use("nave3")
+	})
+
+	onCollide("fusao1", "nave3", (f1, n2) => {
+		destroy(f1)
+		n2.use(sprite("nave1"))
+		n2.unuse("nave3")
+		n2.use("nave1")
+	})
+
+	onCollide("fusao2", "nave3", (f, n) => {
+		destroy(f)
+		n.use(sprite("nave2"))
+		n.unuse("nave3")
+		n.use("nave2")		
 	})
 	
-
 	//Gerador de aliens (inimigos)
 
 	function gerarAliens(){
@@ -278,6 +329,8 @@ scene("jogoDeNave", () => {
 			raioLaser(nave.pos.add(14,0))
 		}else if(nave.is("nave2")){
 			ondaDeEnergia(nave.pos)
+		}else if(nave.is("nave3")){
+			burp()
 		}
 	})
 
