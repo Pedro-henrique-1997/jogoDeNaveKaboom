@@ -330,7 +330,7 @@ scene("jogoDeNave", () => {
 		}else if(nave.is("nave2")){
 			ondaDeEnergia(nave.pos)
 		}else if(nave.is("nave3")){
-			burp()
+			ativarTeleguiado(nave.pos)
 		}
 	})
 
@@ -369,6 +369,40 @@ scene("jogoDeNave", () => {
 		alien.hurt(100)
 		addKaboom(alien.pos)
 	})
+
+	//Especial da nave modelo 3
+
+	function ativarTeleguiado(posicaoInicial) {
+	const alvoMaisProximo = get("alien").sort((a, b) => {
+		return posicaoInicial.dist(a.pos) - posicaoInicial.dist(b.pos)
+	})[0]
+
+	if (!alvoMaisProximo) return
+
+	const tiro = add([
+		rect(12, 12),
+		area(),
+		pos(posicaoInicial),
+		anchor("center"),
+		color(0, 255, 255),
+		"tiroTeleguiado",
+		{
+			alvo: alvoMaisProximo // <--- aqui
+		}
+	])
+
+	tiro.onUpdate(() => {
+		if (!tiro.alvo.exists()) {
+			destroy(tiro)
+			return
+		}
+
+		const direcao = tiro.alvo.pos.sub(tiro.pos).unit()
+		tiro.move(direcao.scale(300))
+	})
+}
+
+
 })
 
 //Cena de Game Over
