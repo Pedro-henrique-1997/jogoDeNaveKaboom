@@ -9,6 +9,7 @@ loadSprite("nave2", "/sprites/Spaceship2.png")
 loadSprite("heart", "/sprites/coracao.png")
 loadSprite("raio", "/sprites/lightening.png")
 loadSprite("nave3", "/sprites/Spaceship3.png")
+loadSprite("missel", "/sprites/play.png")
 
 /***************************Todos os trechos organizados em topicos *********************************/
 //Variaveis contaveis de energia e velocidade
@@ -23,6 +24,7 @@ loadSprite("nave3", "/sprites/Spaceship3.png")
 //Gerar corações para cura e sua execução de cura
 //Especial da nave modelo 1
 //Especial da nave modelo 2
+//Especial da nave modelo 3
 //Cena de Game Over
 // Chamar a cena do jogo
 
@@ -380,11 +382,12 @@ scene("jogoDeNave", () => {
 	if (!alvoMaisProximo) return
 
 	const tiro = add([
-		rect(12, 12),
+		sprite("missel"),
 		area(),
 		pos(posicaoInicial),
 		anchor("center"),
-		color(0, 255, 255),
+		rotate(150),
+		scale(1),
 		"tiroTeleguiado",
 		{
 			alvo: alvoMaisProximo // <--- aqui
@@ -398,9 +401,14 @@ scene("jogoDeNave", () => {
 		}
 
 		const direcao = tiro.alvo.pos.sub(tiro.pos).unit()
-		tiro.move(direcao.scale(300))
+		tiro.move(direcao.scale(800))
 	})
 }
+
+onCollide("tiroTeleguiado", "alien", (te, a) => {
+	a.hurt(60)
+	destroy(te)
+})
 
 
 })
