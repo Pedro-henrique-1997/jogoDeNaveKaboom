@@ -9,6 +9,7 @@ loadSprite("nave2", "/sprites/Spaceship2.png")
 loadSprite("heart", "/sprites/coracao.png")
 loadSprite("raio", "/sprites/lightening.png")
 loadSprite("nave3", "/sprites/Spaceship3.png")
+loadSprite("nave4", "sprites/Spaceship4.png")
 loadSprite("missel", "/sprites/play.png")
 
 /***************************Todos os trechos organizados em topicos *********************************/
@@ -17,6 +18,7 @@ loadSprite("missel", "/sprites/play.png")
 //Evento do mecanismo de mudança de forma
 //Transformação: modelo 2
 //Transformação: modelo 3
+//Transformação: modelo 4
 //Mudança de sprite para o outro
 //Gerador de aliens (inimigos)
 //Criação da barra de energia
@@ -166,6 +168,32 @@ scene("jogoDeNave", () => {
 			pos(0,0),
 		])
 	}
+
+	//Transformação: modelo 4
+
+	function gerarIconeTransform4(){
+		var base = add([
+			rect(48, 48),
+			color(0, 0, 132),
+			area(),
+			anchor("center"),
+			pos(rand(48, width() - 48), 0),
+			outline(4, rgb(0, 0, 0)),  
+			move(DOWN, iconeTransformSpeed),
+			"fusao4"
+		])
+
+		base.add([
+			text("4", {size: 28}),
+			color(255, 255, 255),
+			pos(0, 0),
+			anchor("center"),
+		])
+	}
+
+	loop(5, () => {
+		gerarIconeTransform4()
+	})
 	
     loop(4, () => {
 		gerarIconeTransform3()
@@ -192,7 +220,7 @@ scene("jogoDeNave", () => {
 		destroy(f)
 		n.use(sprite("nave2"))
 		n.unuse("nave1")
-		n.use("nave2")		
+		n.use("nave2")	
 	})
 
 	onCollide("fusao3", "nave1", (f, n) => {
@@ -221,6 +249,48 @@ scene("jogoDeNave", () => {
 		n.use(sprite("nave2"))
 		n.unuse("nave3")
 		n.use("nave2")		
+	})
+
+	onCollide("fusao4", "nave1", (f, n) => {
+		destroy(f)
+		n.use(sprite("nave4"))
+		n.unuse("nave1")
+		n.use("nave4")
+	})
+
+	onCollide("fusao4", "nave2", (f, n) => {
+		destroy(f)
+		n.use(sprite("nave4"))
+		n.unuse("nave2")
+		n.use("nave4")
+	})
+
+	onCollide("fusao4", "nave3", (f, n) => {
+		destroy(f)
+		n.use(sprite("nave4"))
+		n.unuse("nave3")
+		n.use("nave4")
+	})
+
+	onCollide("fusao1", "nave4", (f, n) => {
+        destroy(f)
+		n.use(sprite("nave1"))
+		n.unuse("nave4")
+		n.use("nave1")
+	})
+
+	onCollide("fusao2", "nave4", (f, n) => {
+        destroy(f)
+		n.use(sprite("nave2"))
+		n.unuse("nave4")
+		n.use("nave2")
+	})
+
+	onCollide("fusao3", "nave4", (f, n) => {
+        destroy(f)
+		n.use(sprite("nave3"))
+		n.unuse("nave4")
+		n.use("nave3")
 	})
 	
 	//Gerador de aliens (inimigos)
@@ -333,6 +403,8 @@ scene("jogoDeNave", () => {
 			ondaDeEnergia(nave.pos)
 		}else if(nave.is("nave3")){
 			ativarTeleguiado(nave.pos)
+		}else if(nave.is("nave4")){
+			burp()
 		}
 	})
 
