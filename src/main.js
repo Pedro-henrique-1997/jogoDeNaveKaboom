@@ -10,7 +10,7 @@ loadSprite("heart", "/sprites/coracao.png")
 loadSprite("raio", "/sprites/lightening.png")
 loadSprite("nave3", "/sprites/Spaceship3.png")
 loadSprite("nave4", "sprites/Spaceship4.png")
-loadSprite("missel", "/sprites/play.png")
+loadSprite("missel", "/sprites/missel_30x41.png")
 
 /***************************Todos os trechos organizados em topicos *********************************/
 //Variaveis contaveis de energia e velocidade
@@ -460,7 +460,7 @@ scene("jogoDeNave", () => {
 		pos(posicaoInicial),
 		anchor("center"),
 		rotate(150),
-		scale(1),
+		scale(3),
 		"tiroTeleguiado",
 		{
 			alvo: alvoMaisProximo // <--- aqui
