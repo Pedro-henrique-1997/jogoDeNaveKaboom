@@ -27,6 +27,7 @@ loadSprite("missel", "/sprites/play.png")
 //Especial da nave modelo 1
 //Especial da nave modelo 2
 //Especial da nave modelo 3
+//Especial da nave modelo 4
 //Cena de Game Over
 // Chamar a cena do jogo
 
@@ -404,7 +405,7 @@ scene("jogoDeNave", () => {
 		}else if(nave.is("nave3")){
 			ativarTeleguiado(nave.pos)
 		}else if(nave.is("nave4")){
-			burp()
+			chuvaDeMeteoros()
 		}
 	})
 
@@ -482,6 +483,30 @@ onCollide("tiroTeleguiado", "alien", (te, a) => {
 	destroy(te)
 })
 
+//Especial da nave modelo 4
+
+function chuvaDeMeteoros(){
+	for(let i = 0; i < 10; i++){
+		wait(i * 0.2, () => {
+			const meteoro = add([
+				rect(24, 48),
+				color(255, 120, 0),
+                area(),
+				pos(rand(0, width()), 0),
+				move(DOWN, 800),
+				anchor("center"),
+				offscreen({destroy: true}),
+				"meteoro",
+			]);
+		});
+	}
+}
+
+onCollide("meteoro", "alien", (m, a) => {
+	a.hurt(120);
+	destroy(m);
+	addKaboom(a.pos);
+})
 
 })
 
